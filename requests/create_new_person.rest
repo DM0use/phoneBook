@@ -1,0 +1,17 @@
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "asd",
+    "number": "45612345"
+}
+
+###
+//missing name
+
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "123445612345"
+}

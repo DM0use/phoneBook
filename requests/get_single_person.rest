@@ -1,0 +1,6 @@
+GET http://localhost:3001/api/persons/2
+
+###
+
+//Not found
+GET http://localhost:3001/api/persons/7
