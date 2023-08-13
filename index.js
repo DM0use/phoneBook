@@ -1,6 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
 
+const Person = require('./models/person')
+
 const app = express()
 
 const requestLogger = (request, response, next) => {
@@ -57,24 +59,33 @@ const generateId = () => {
 }
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then((persons) => {
+    response.json(persons)
+    console.log(persons)
+  })
 })
 
 app.get('/info', (request, response) => {
-  const numberOfPeople = persons.length
-  response.send(
-    `<p>Phonebook has info for ${numberOfPeople} people</p><p>${Date()}</p>`
-  )
+  Person.find({}).then((persons) => {
+    const numberOfPeople = persons.length
+    response.send(
+      `<p>Phonebook has info for ${numberOfPeople} people</p><p>${Date()}</p>`
+    )
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find((person) => person.id === id)
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (!person) {
+        response.status(404).end()
+      } else {
+        response.json(person)
+      }
+    })
+    .catch((error) => {
+      response.status(500).end()
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -87,27 +98,26 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
+  const newPerson = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: 'name or number missing',
     })
   }
 
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({
-      error: 'name must be unique',
-    })
-  }
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({
+  //     error: 'name must be unique',
+  //   })
+  // }
 
-  const person = {
-    id: generateId(),
-    name: body.name,
-    number: body.number,
-  }
-
-  persons = persons.concat(person)
-
-  response.json(person)
+  newPerson.save().then((savedPerson) => {
+    response.json(savedPerson)
+  })
 })
 
 const unknownEndpoint = (request, response) => {

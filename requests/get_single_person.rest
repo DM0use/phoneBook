@@ -1,6 +1,11 @@
-GET http://localhost:3001/api/persons/2
+GET http://localhost:3001/api/persons/64d8a411eb5c02ef291dfe71
 
 ###
 
-//Not found
-GET http://localhost:3001/api/persons/7
+//Not found - 404
+GET http://localhost:3001/api/persons/64d8a411eb5c02ef291dfe72
+
+###
+
+//wrong id type - 500
+GET http://localhost:3001/api/persons/6
