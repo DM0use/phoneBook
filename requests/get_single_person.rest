@@ -7,5 +7,5 @@ GET http://localhost:3001/api/persons/64d8a411eb5c02ef291dfe72
 
 ###
 
-//wrong id type - 500
+//wrong id type - 400
 GET http://localhost:3001/api/persons/6
